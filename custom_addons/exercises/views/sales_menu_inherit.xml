@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="inherit_sale_order_menu" model="ir.ui.menu">
+            <field name="name">Quotation for approval</field>
+            <field name="parent_id" ref="sale.sale_order_menu"/>
+            <field name="sequence" eval="50"/>
+            <field name="action" ref="action_quotation_for_approval"/>
+        </record>
+    </data>
+</odoo>
