@@ -26,31 +26,28 @@
         </field>
     </record>
 
-    <record id="quotation_for_approval_form_view" model="ir.ui.view">
-        <field name="name">sale.order.quotation.form</field>
-        <field name="model">sale.order</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <form name="name"/>
-                </sheet>
-            </form>
-        </field>
-    </record>
+<!--    <record id="quotation_for_approval_form_view" model="ir.ui.view">-->
+<!--        <field name="name">sale.order.quotation.form</field>-->
+<!--        <field name="model">sale.order</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form>-->
+<!--                <sheet>-->
+<!--                    <form name="name"/>-->
+<!--                </sheet>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
 
     <record id="action_quotation_for_approval" model="ir.actions.act_window">
         <field name="name">Quotation for approval</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">sale.order</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="quotation_for_approval_tree_view"/>
         <!--        <field name="view_ids"-->
         <!--               eval="[(0, 0, {'view_id': ref('quotation_for_approval_tree_view'), 'view_mode': 'tree'}), (0, 0, {'view_id': ref('quotation_for_approval_form_view'), 'view_mode': 'form'})]"/>-->
         <!--        <field name="view_mode">tree,form</field>-->
         <field name="domain">[('approval_status', '!=', 'approved'), ('approval_status', '!=', '')]</field>
     </record>
-    <record id="action_quotation_for_approval_tree_view" model="ir.actions.act_window.view">
-        <field name="sequence" eval="1"/>
-        <field name="view_mode">tree</field>
-        <field name="view_id" ref="quotation_for_approval_tree_view"/>
-        <field name="act_window_id" ref="action_hr_voucher_confirmation_list"/>
-    </record>
+
 </odoo>

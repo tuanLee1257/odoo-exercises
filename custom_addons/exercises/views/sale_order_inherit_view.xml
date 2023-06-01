@@ -11,11 +11,14 @@
                 <field name="end_user"
                        widget="url"
                        attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-<!--                <button name="_open_customer_list_view" string="Click me" class="btn-primary" type="object"/>-->
+                <!--                <button name="_open_customer_list_view" string="Click me" class="btn-primary" type="object"/>-->
                 <field name="deposit_required"/>
-                <field name="deposit_paid" />
+                <field name="deposit_paid"/>
                 <field name="deposit_paid_on" readonly="true"/>
                 <field name="deposit_ship_date" readonly="true"/>
+                <button name="action_redirect_to_customer" string="Redirect to Customer View" type="object"
+                        class="oe_highlight"/>
+
             </xpath>
         </field>
     </record>

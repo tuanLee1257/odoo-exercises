@@ -52,3 +52,15 @@ class SaleOrderInherit(models.Model):
         float_amount_for_approval = float(amount_for_approval)
         if self.amount_total > float_amount_for_approval:
             self.approval_status = 'required'
+
+    def action_redirect_to_customer(self):
+        return {
+            'name': ('Redirect Chosen Products'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'tree',
+            'view_mode': 'tree',
+            'res_model': 'sale.order',
+            'target': 'current',
+            'view_id': False,
+            # 'domain': [('id', 'in', ids)]  # Filter id barang yang ditampilkan
+        }
