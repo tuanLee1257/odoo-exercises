@@ -11,16 +11,11 @@ class SaleOrderInherit(models.Model):
     deposit_ship_date = fields.Date(string='Deposit Ship Date', compute='_compute_ship_date')
 
     print_type = fields.Selection([('commercial', 'Commercial'), ('residential', 'Residential')], string='Type')
-    approved = fields.Boolean(string='Is Approved?')
-    require_approve = fields.Boolean(string='Require approve', store=True, compute='_compute_require_approve')
+
     approval_status = fields.Selection([('required', 'Waiting for approval'), ('approved', 'Approved')],
-                                       string='Status')
+                                       string='Status', store=True, compute='_compute_require_approve', readonly=True)
+
     end_user = fields.Char(string='End User')
-    end_user_related_id = fields.Many2one(
-        'res.partner',
-        string='End User Related',
-        compute='_compute_end_user_related'
-    )
 
     @api.onchange('deposit_paid')
     def _onchange_deposit_paid(self):
@@ -40,27 +35,30 @@ class SaleOrderInherit(models.Model):
                 ship_date = paid_date + relativedelta(weeks=7)
                 rec.deposit_ship_date = ship_date.date()
 
-    def _compute_end_user_related(self):
-        for order in self:
-            order.end_user_related_id = self.env['res.partner'].search(
-                [('name', 'ilike', order.end_user)], limit=1
-            )
-
     @api.depends('amount_total')
     def _compute_require_approve(self):
         amount_for_approval = self.env['ir.config_parameter'].get_param('sale.amount_to_require_quotation_approval')
         float_amount_for_approval = float(amount_for_approval)
-        if self.amount_total > float_amount_for_approval:
-            self.approval_status = 'required'
+        for rec in self:
+            if rec.amount_total > float_amount_for_approval:
+                rec.approval_status = 'required'
+            else:
+                rec.approval_status = False
 
-    def action_redirect_to_customer(self):
-        return {
-            'name': ('Redirect Chosen Products'),
-            'type': 'ir.actions.act_window',
-            'view_type': 'tree',
-            'view_mode': 'tree',
-            'res_model': 'sale.order',
-            'target': 'current',
-            'view_id': False,
-            # 'domain': [('id', 'in', ids)]  # Filter id barang yang ditampilkan
-        }
+    @api.depends('approval_status')
+    def _reload_quotation_state_on_approval_status(self):
+        for rec in self:
+            if rec.approval_status == 'required':
+                rec.state = 'draft'
+
+    def action_confirm_with_require_approval(self):
+        self.action_confirm()
+        for rec in self:
+            if rec.approval_status == 'required':
+                rec.state = 'draft'
+
+    def action_confirm_quotation(self):
+        self.action_unlock()
+
+    def action_set_to_draft(self):
+        self.action_draft()

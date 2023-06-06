@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="service_menu_root"
+              name="Service"
+              sequence="70">
+        <menuitem id="service_menu_0"
+                  name='Service'
+                  sequence="0"
+                  action="action_service_menu"/>
+    </menuitem>
+</odoo>

@@ -7,18 +7,21 @@
         <field name="arch" type="xml">
             <xpath expr="//form//sheet//group//group[2]//field[@name='payment_term_id']" position="after">
                 <field name="print_type" attrs="{'readonly': [('state', 'in', ('done','cancel','sale'))]}"/>
-                <field name="require_approve" readonly="true" optional="hide"/>
-                <field name="end_user"
-                       widget="url"
+                <field name="approval_status" readonly="true"/>
+                <field name="end_user" widget="url" placeholder="e.g. My Outgoing Server"
                        attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-                <!--                <button name="_open_customer_list_view" string="Click me" class="btn-primary" type="object"/>-->
                 <field name="deposit_required"/>
                 <field name="deposit_paid"/>
                 <field name="deposit_paid_on" readonly="true"/>
                 <field name="deposit_ship_date" readonly="true"/>
-                <button name="action_redirect_to_customer" string="Redirect to Customer View" type="object"
-                        class="oe_highlight"/>
-
+            </xpath>
+            <xpath expr="//form//header/button[@name='action_confirm']" position="after">
+                <button name="action_confirm_with_require_approval" string="CONFIRM QUOTATION" type="object"
+                        class="btn-danger"
+                        attrs="{'invisible': ['|', ('state', 'not in', ['draft']), ('approval_status','!=','required')]}"/>
+            </xpath>
+            <xpath expr="//form//header/button[@name='action_confirm' and not(@class)]" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', ('state', 'not in', ['draft']), ('approval_status','==','required')]}</attribute>
             </xpath>
         </field>
     </record>
